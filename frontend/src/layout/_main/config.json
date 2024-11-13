@@ -1,0 +1,102 @@
+{
+  "menu": [
+    {
+      "title": "Categories",
+      "path": "",
+      "isDropdown": true
+    },
+    {
+      "title": "Home",
+      "path": "/"
+    },
+
+    {
+      "title": "Products",
+      "path": "/products"
+    },
+
+    {
+      "title": "Shops",
+      "path": "/shops"
+    },
+    {
+      "title": "Compaigns",
+      "path": "/compaigns"
+    },
+    {
+      "title": "Contact",
+      "path": "/contact"
+    },
+    {
+      "title": "About",
+      "path": "/about"
+    }
+  ],
+  "mobile_menu": [
+    {
+      "name": "Home",
+      "href": "/"
+    },
+    {
+      "name": "Search",
+      "href": "/search"
+    },
+    {
+      "name": "Product",
+      "href": "/products"
+    },
+    {
+      "name": "Cart",
+      "href": "/cart"
+    },
+    {
+      "name": "User",
+      "isUser": true,
+      "href": "/auth/login"
+    }
+  ],
+
+  "social": [
+    { "name": "FaceBook", "color": "#1672E6", "href": "#" },
+    { "name": "Instagram", "color": "#F40052", "href": "#" },
+    { "name": "Linkedin", "color": "#0962B7", "href": "#" },
+    { "name": "Pinterest", "color": "#B7081B", "href": "#" }
+  ],
+  "company": {
+    "company_name": "Nextall",
+    "address": "123 Main Street Apartment 567",
+    "email": "test@example.com",
+    "phone": "555-1234-2222"
+  },
+  "footer_links": [
+    {
+      "headline": "Product",
+      "children": [
+        { "name": "application", "href": "#" },
+        { "name": "features", "href": "#" },
+        { "name": "Requirements", "href": "#" },
+        { "name": "Technology", "href": "#" }
+      ]
+    },
+    {
+      "headline": "Resources",
+      "children": [
+        { "name": "Changelogy", "href": "#" },
+        { "name": "Updates", "href": "#" },
+        { "name": "Providers", "href": "#" },
+        { "name": "Affiliat", "href": "#" },
+        { "name": "Roadmap", "href": "#" }
+      ]
+    },
+    {
+      "headline": "Company",
+      "children": [
+        { "name": "Blog", "href": "#" },
+        { "name": "about us", "href": "#" },
+        { "name": "contact us", "href": "#" },
+        { "name": "Jobs", "href": "#" },
+        { "name": "Team", "href": "#" }
+      ]
+    }
+  ]
+}
