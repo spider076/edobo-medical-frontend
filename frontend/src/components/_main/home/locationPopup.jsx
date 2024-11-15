@@ -43,7 +43,7 @@ const LocationPopup = ({ onClose }) => {
         boxShadow: 3,
         borderRadius: 2,
         zIndex: 1000,
-        textAlign: 'center',
+        textAlign: 'center'
       }}
     >
       <Typography variant="h6" gutterBottom>

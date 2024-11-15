@@ -67,9 +67,10 @@ export default function RegisterForm() {
     onSuccess: async (data) => {
       dispatch(setLogin(data.user));
       await createCookies('token', data.token);
-      toast.success('OTP sent to your email' + ' ' + data.user.firstName);
+      toast.success(data.message);
+      // toast.success('OTP sent to your email' + ' ' + data.user.firstName);
       setloading(false);
-      router.push(redirect ? `/auth/verify-otp?redirect=${redirect}` : `/auth/verify-otp`);
+      // router.push(redirect ? `/auth/verify-otp?redirect=${redirect}` : `/auth/verify-otp`);
     },
     onError: (err) => {
       const message = JSON.stringify(err.response.data.message);
@@ -77,7 +78,9 @@ export default function RegisterForm() {
       setloading(false);
     }
   });
+
   const { errors, touched, handleSubmit, values, getFieldProps } = formik;
+
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
