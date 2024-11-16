@@ -17,7 +17,7 @@ const LocationPopup = ({ onClose }) => {
   });
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyBYaUmkSyrXGhQhl2GmRjpQ53a99fI7d5E', // Replace with your API key
+    googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY, // Replace with your API key
     libraries: ['places']
   });
 
