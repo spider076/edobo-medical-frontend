@@ -1,21 +1,19 @@
 'use client';
 // react
-import * as React from 'react';
 import { sum } from 'lodash';
-import { usePathname } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
+import { usePathname } from 'next/navigation';
+import * as React from 'react';
 import { useSelector } from 'react-redux';
 
 // mui
-import { Box, Badge, Button } from '@mui/material';
+import { Badge, Box, Button } from '@mui/material';
 
 // icons
-import { HiOutlineHome, HiHome } from 'react-icons/hi';
-import { IoSearch } from 'react-icons/io5';
 import { BsShopWindow } from 'react-icons/bs';
-import { HiShoppingBag, HiOutlineShoppingBag } from 'react-icons/hi';
-import { FaRegUser } from 'react-icons/fa6';
-import { FaUser } from 'react-icons/fa6';
+import { FaRegUser, FaUser } from 'react-icons/fa6';
+import { HiHome, HiOutlineCamera, HiOutlineHome, HiOutlineShoppingBag, HiShoppingBag } from 'react-icons/hi';
+import { IoSearch } from 'react-icons/io5';
 
 // styles
 import RootStyled from './styled';
@@ -43,6 +41,8 @@ const getIcon = (href, totalItems) => {
       );
     case '/products':
       return <BsShopWindow size={18} />;
+    case '/camera':
+      return <HiOutlineCamera size={18} />;
     default:
       return <FaRegUser size={18} />;
   }
@@ -68,6 +68,8 @@ const getActiveIcon = (href, totalItems) => {
       );
     case '/products':
       return <BsShopWindow size={18} />;
+    case '/camera':
+      return <HiOutlineCamera size={18} />;
     default:
       return <FaUser size={18} />;
   }
@@ -100,14 +102,16 @@ export default function MobileBar() {
       });
       const index =
         pathname.includes('/auth') || pathname.includes('/profile')
-          ? 4
+          ? 5
           : pathname.includes('/cart')
-            ? 3
+            ? 4
             : pathname.includes('/products')
-              ? 2
-              : pathname.includes('/search')
-                ? 1
-                : 0;
+              ? 3
+              : pathname.includes('/camera')
+                ? 2
+                : pathname.includes('/search')
+                  ? 1
+                  : 0;
       return index;
     };
     setIndex(isActiveIndex());

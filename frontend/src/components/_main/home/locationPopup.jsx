@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, TextField, IconButton, Grid } from '@mui/material';
-import { GoogleMap, Marker, useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+'use client';
+
 import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Grid, IconButton, TextField, Typography } from '@mui/material';
+import { Autocomplete, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setLocation } from 'src/redux/slices/user';
 
 const LocationPopup = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [location, setLocation] = useState(null);
+  const [locationAccess, setLocationAccess] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const [autocomplete, setAutocomplete] = useState(null);
   const [address, setAddress] = useState({
@@ -16,8 +20,13 @@ const LocationPopup = ({ onClose }) => {
     country: ''
   });
 
+  const dispatch = useDispatch();
+  const location = window?.localStorage.getItem('location')
+    ? JSON.parse(window.localStorage.getItem('location'))
+    : null;
+
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY, // Replace with your API key
+    googleMapsApiKey: 'AIzaSyBYaUmkSyrXGhQhl2GmRjpQ53a99fI7d5E',
     libraries: ['places']
   });
 
@@ -34,7 +43,7 @@ const LocationPopup = ({ onClose }) => {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
-          setLocation(coords);
+          setLocationAccess(coords);
           fetchAddressFromCoords(coords);
         },
         (error) => {
@@ -65,7 +74,7 @@ const LocationPopup = ({ onClose }) => {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng()
         };
-        setLocation(coords);
+        setLocationAccess(coords);
         setSearchInput(place.formatted_address || '');
       }
     }
@@ -79,12 +88,19 @@ const LocationPopup = ({ onClose }) => {
   };
 
   const handleSubmit = () => {
+    dispatch(setLocation(searchInput));
+    window.localStorage.setItem('location', JSON.stringify(searchInput));
     console.log('Address Submitted:', address);
+    onClose();
   };
 
   useEffect(() => {
     if (!isVisible) onClose();
-  }, [isVisible, onClose]);
+  }, [isVisible, onClose, locationAccess]);
+
+  console.log('ocation : ', location);
+
+  if (location) return null;
 
   if (!isVisible || !isLoaded) return null;
 
@@ -96,7 +112,7 @@ const LocationPopup = ({ onClose }) => {
         left: '50%',
         transform: 'translateX(-50%)',
         width: '90%',
-        maxWidth: '800px',
+        maxWidth: '600px',
         p: 2,
         bgcolor: 'white',
         boxShadow: 3,
@@ -115,13 +131,23 @@ const LocationPopup = ({ onClose }) => {
       >
         <CloseIcon />
       </IconButton>
+      <IconButton
+        onClick={() => setIsVisible(false)}
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
       <Typography variant="h6" gutterBottom>
         Allow Location Access
       </Typography>
       <Typography variant="body2" color="textSecondary" gutterBottom>
         We need your location to provide the best shopping experience.
       </Typography>
-      {!location ? (
+      {!locationAccess ? (
         <Button variant="contained" color="primary" onClick={handleAllowLocation}>
           Allow Location
         </Button>
@@ -141,8 +167,8 @@ const LocationPopup = ({ onClose }) => {
                 />
               </Autocomplete>
             </Box>
-            <GoogleMap mapContainerStyle={{ width: '100%', height: '400px' }} center={location} zoom={12}>
-              <Marker position={location} />
+            <GoogleMap mapContainerStyle={{ width: '100%', height: '400px' }} center={locationAccess} zoom={12}>
+              <Marker position={locationAccess} />
             </GoogleMap>
           </Grid>
 

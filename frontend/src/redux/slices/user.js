@@ -6,6 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isAuthenticated: false,
   user: null,
+  location: null,
   count: 0,
   isInitialized: false,
   followingShops: []
@@ -25,7 +26,10 @@ const slice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-
+    setLocation(state, action) {
+      state.location = action.payload;
+      window.localStorage.setItem('location', JSON.stringify(action.payload));
+    },
     setCount(state) {
       state.count = state.count + 1;
     },
@@ -60,6 +64,7 @@ export default slice.reducer;
 export const {
   setLogin,
   setLogout,
+  setLocation,
   setCount,
   setInitialize,
   updateStatus,

@@ -42,6 +42,10 @@
       "href": "/search"
     },
     {
+      "name": "Camera",
+      "href": "/camera"
+    },
+    {
       "name": "Product",
       "href": "/products"
     },
