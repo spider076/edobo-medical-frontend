@@ -15,7 +15,7 @@ export default async function AdminProducts() {
     <>
       <HeaderBreadcrumbs
         admin
-        heading="Categories List"
+        heading="Products List"
         links={[
           {
             name: 'Dashboard',

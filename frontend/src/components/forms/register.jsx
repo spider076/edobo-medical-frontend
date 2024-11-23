@@ -68,9 +68,9 @@ export default function RegisterForm() {
       dispatch(setLogin(data.user));
       await createCookies('token', data.token);
       toast.success(data.message);
-      // toast.success('OTP sent to your email' + ' ' + data.user.firstName);
+      toast.success('OTP sent to your email' + ' ' + data.user.firstName);
       setloading(false);
-      // router.push(redirect ? `/auth/verify-otp?redirect=${redirect}` : `/auth/verify-otp`);
+      router.push(redirect ? `/auth/verify-otp?redirect=${redirect}` : `/auth/verify-otp`);
     },
     onError: (err) => {
       const message = JSON.stringify(err.response.data.message);

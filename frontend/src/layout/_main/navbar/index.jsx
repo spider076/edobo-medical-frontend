@@ -38,25 +38,14 @@ const CartWidget = dynamic(() => import('src/components/cartWidget'), {
   )
 });
 
-const CompareWidget = dynamic(() => import('src/components/compareWidget'), {
-  loading: () => (
-    <Stack direction="row" spacing={1} alignItems="center">
-      <Skeleton variant="circular" width={40} height={40} />
-      <Box>
-        <Skeleton variant="text" width={60} sx={{ mb: 0.6 }} />
-        <Skeleton variant="text" width={60} />
-      </Box>
-    </Stack>
-  )
-});
 const Search = dynamic(() => import('src/components/dialog/search'), {
   srr: false,
   loading: () => <Skeleton variant="rounded" width={300} height={56} sx={{ borderRadius: '70px' }} />
 });
-const LanguageSelect = dynamic(() => import('src/components/languageSelect'), {
-  ssr: false,
-  loading: () => <Skeleton variant="circular" width={40} height={40} />
-});
+// const LanguageSelect = dynamic(() => import('src/components/languageSelect'), {
+//   ssr: false,
+//   loading: () => <Skeleton variant="circular" width={40} height={40} />
+// });
 
 // ----------------------------------------------------------------------
 export default function Navbar() {
@@ -95,10 +84,8 @@ export default function Navbar() {
             </Stack>
 
             <Stack gap={2} direction="row" alignItems={'center'}>
-              <LanguageSelect />
               <SettingMode />
               <WishlistPopover />
-              <CompareWidget />
               <CartWidget checkout={checkout} />
             </Stack>
           </Toolbar>

@@ -101,7 +101,7 @@ export default function InvoicePDF({ data }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.gridContainer, styles.mb40]}>
-          <Image source="/logo.png" alt="" style={{ height: 32 }} />
+          <Image source="/edoboLogo.svg" alt="" style={{ height: 32 }} />
           <View style={{ alignItems: 'right', flexDirection: 'column' }}>
             <Text style={styles.h3}>{data?.status}</Text>
             <Text>INV-{data?._id}</Text>

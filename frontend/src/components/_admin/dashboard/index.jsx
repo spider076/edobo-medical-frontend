@@ -50,6 +50,8 @@ export default function Dashboard({ isVendor }) {
   const totalPendingOrders = data?.totalPendingOrders;
   const totalReturnOrders = data?.totalReturnOrders;
 
+  console.log('dta : ', data);
+
   return (
     <Box>
       <Grid container spacing={3}>

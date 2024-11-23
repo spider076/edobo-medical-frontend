@@ -112,7 +112,7 @@ export default function ProductForm({
       slug: currentProduct?.slug || '',
       metaTitle: currentProduct?.metaTitle || '',
       metaDescription: currentProduct?.metaDescription || '',
-      brand: currentProduct?.brand || brands[0]?._id || '',
+      brand: currentProduct?.brand || brands[0]?._id || 'ABC',
       tags: currentProduct?.tags || [],
       gender: currentProduct?.gender || '',
       category: currentProduct?.category || (categories.length && categories[0]?._id) || '',
