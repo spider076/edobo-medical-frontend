@@ -16,6 +16,7 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@formatjs/intl-localematcher": "^0.5.4",
+    "@google-cloud/documentai": "^8.12.0",
     "@mui/icons-material": "latest",
     "@mui/lab": "^5.0.0-alpha.153",
     "@mui/material": "latest",

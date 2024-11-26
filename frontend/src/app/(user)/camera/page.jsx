@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { SwapHoriz } from '@mui/icons-material';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { GrGallery } from 'react-icons/gr';
 import Webcam from 'react-webcam';
 
@@ -13,6 +12,9 @@ const CameraPage = () => {
   const [dimension, setDimension] = useState({ width: 400, height: 700 });
   const [cameraAccess, setCameraAccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  // temp
+  const [file, setFile] = useState(null);
 
   const checkCameraPermission = useCallback(async () => {
     try {
@@ -76,9 +78,14 @@ const CameraPage = () => {
         const formData = new FormData();
         formData.append('photo', imageSrc);
 
-        const response = await fetch('send req to backend to process', {
+        const response = await fetch('/api/process-pdf', {
           method: 'POST',
-          body: formData
+          body: JSON.stringify({
+            projectId: 'your-project-id',
+            location: 'us-central1',
+            processorId: 'your-processor-id',
+            filePath: imageSrc
+          })
         });
 
         if (response.ok) {
@@ -97,6 +104,34 @@ const CameraPage = () => {
       setLoading(false);
     }
   }, [cameraAccess]);
+
+  const processFile = async (selectedFile) => {
+    if (!selectedFile) {
+      alert('Please select a file first!');
+      return;
+    }
+    const formData = new FormData();
+    // formData.append('projectId', 'your-project-id');
+    // formData.append('location', 'us-central1');
+    // formData.append('processorId', 'your-processor-id');
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('http://localhost:4000/process-pdf', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        console.error('Error processing document:', data.error);
+      } else {
+        console.log('response : ', data.text);
+      }
+    } catch (error) {
+      console.error('Error processing document:', error);
+    }
+  };
 
   if (!isMobile) {
     return (
@@ -141,8 +176,13 @@ const CameraPage = () => {
           type="file"
           id="hiddenFileInput"
           style={{ display: 'none' }}
-          accept="image/*"
-          onChange={(e) => console.log('Selected file:', e.target.files[0])}
+          accept=".jpg, .jpeg, .png, .pdf"
+          onChange={(e) => {
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+              processFile(selectedFile);
+            }
+          }}
         />
         <button onClick={() => document.getElementById('hiddenFileInput').click()} style={buttonStyle}>
           <GrGallery />
