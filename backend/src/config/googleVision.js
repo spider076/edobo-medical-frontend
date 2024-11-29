@@ -8,24 +8,26 @@ const location = "us";
 const processorId = process.env.GOOGLE_PROCESSORID;
 
 // Helper function to extract text from a text anchor
-// function getText(textAnchor, text) {
-//   if (!textAnchor.textSegments || textAnchor.textSegments.length === 0) {
-//     // Return an empty string if no text segments are found
-//     return "";
-//   }
+function getText(textAnchor, text) {
+  if (!textAnchor.textSegments || textAnchor.textSegments.length === 0) {
+    // Return an empty string if no text segments are found
+    return "";
+  }
 
-//   // First shard in document doesn't have startIndex property
-//   const startIndex = textAnchor.textSegments[0].startIndex || 0;
-//   const endIndex = textAnchor.textSegments[0].endIndex;
+  console.log({textAnchor, text});
 
-//   // Check if the text is valid before returning
-//   if (startIndex !== undefined && endIndex !== undefined) {
-//     return text.substring(startIndex, endIndex);
-//   } else {
-//     console.warn("Warning: Invalid text anchor. Returning an empty string.");
-//     return "";
-//   }
-// }
+  // First shard in document doesn't have startIndex property
+  const startIndex = textAnchor.textSegments[0].startIndex || 0;
+  const endIndex = textAnchor.textSegments[0].endIndex;
+
+  // Check if the text is valid before returning
+  if (startIndex !== undefined && endIndex !== undefined) {
+    return text.substring(startIndex, endIndex);
+  } else {
+    console.warn("Warning: Invalid text anchor. Returning an empty string.");
+    return "";
+  }
+}
 
 const googleVision = async ({ filePath }) => {
   try {
@@ -46,8 +48,8 @@ const googleVision = async ({ filePath }) => {
 
     const [response] = await client.processDocument(request);
 
-    const { document: asdf } = response;
-    const { pages } = asdf;
+    const { document: documentText } = response;
+    const { pages } = documentText;
 
     for (const page of pages) {
       console.log(`\n\n**** Page ${page.pageNumber} ****`);
@@ -56,7 +58,10 @@ const googleVision = async ({ filePath }) => {
       for (const table of page.tables) {
         console.log("table : ", table);
 
-        console.log("bodyrow 1 : ", table.bodyRows[0].cells[0].layout.textAnchor.textSegments);
+        console.log(
+          "bodyrow 1 : ",
+          getText(table.bodyRows[0].cells[0].layout.textAnchor, documentText.text)
+        );
 
         const numColumns = table.headerRows[0].cells.length;
         const numRows = table.bodyRows.length;
