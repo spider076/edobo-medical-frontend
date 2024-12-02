@@ -474,10 +474,15 @@ export const getProfile = async () => {
   return data;
 };
 
-export const getCart = async (ids) => {
+export const getCart = async (products) => {
   const { data } = await http.post(`/cart`, {
-    products: ids
+    products
   });
+  return data;
+};
+
+export const addToCart = async (payload) => {
+  const { data } = await http.post(`/cart/add`, payload);
   return data;
 };
 
@@ -619,3 +624,9 @@ export const followShop = async (shopId) => {
 //   const { data } = await http.post(`/contact-us`, payload);
 //   return data;
 // };
+
+// vision api
+export const processPdf = async (payload) => {
+  const { data } = await http.post(`/process-pdf`, payload);
+  return data;
+};

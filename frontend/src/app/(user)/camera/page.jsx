@@ -1,8 +1,15 @@
 'use client';
 
+import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { GrGallery } from 'react-icons/gr';
+import { useMutation } from 'react-query';
 import Webcam from 'react-webcam';
+import * as api from 'src/services';
+import { useDispatch } from 'src/redux';
+import { addCart } from 'src/redux/slices/product';
+import { FaSpinner } from 'react-icons/fa';
 
 const CameraPage = () => {
   const webcamRef = useRef(null);
@@ -12,10 +19,33 @@ const CameraPage = () => {
   const [dimension, setDimension] = useState({ width: 400, height: 700 });
   const [cameraAccess, setCameraAccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [unavailables, setUnavailables] = useState([]);
 
-  // temp
-  const [file, setFile] = useState(null);
+  const router = useRouter();
+  const { mutate: mutatePdf } = useMutation(api.processPdf, {
+    onSuccess: async (res) => {
+      const { availableProducts, unavailableProducts } = await res;
+      toast.success(res.message);
 
+      if (unavailableProducts.length > 0) {
+        setUnavailables(unavailableProducts);
+      }
+
+      if (availableProducts.length > 0) {
+        toast.success(`Following products are available: ${availableProducts.join(', ')}`);
+      }
+      setTimeout(() => {
+        router.push('/cart');
+      }, 6000);
+      setLoading(false);
+    },
+    onError: (err) => {
+      console.log('err : ', err);
+      const message = JSON.stringify(err.response.data.message);
+      setLoading(false);
+      toast.error(message ? JSON.parse(message) : 'Something went wrong!');
+    }
+  });
   const checkCameraPermission = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -111,26 +141,9 @@ const CameraPage = () => {
       return;
     }
     const formData = new FormData();
-    // formData.append('projectId', 'your-project-id');
-    // formData.append('location', 'us-central1');
-    // formData.append('processorId', 'your-processor-id');
     formData.append('file', selectedFile);
 
-    try {
-      const response = await fetch('http://localhost:4000/process-pdf', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-      if (data.error) {
-        console.error('Error processing document:', data.error);
-      } else {
-        console.log('response : ', data.text);
-      }
-    } catch (error) {
-      console.error('Error processing document:', error);
-    }
+    mutatePdf(formData);
   };
 
   if (!isMobile) {
@@ -157,6 +170,19 @@ const CameraPage = () => {
           <p style={{ color: 'red', textAlign: 'center' }}>Camera not accessible. Please allow camera access.</p>
         )}
       </div>
+
+      {unavailables.length > 0 && (
+        <p style={{ color: 'red', marginTop: '10px' }}>
+          The following products are not available: {unavailables.join(', ')}
+        </p>
+      )}
+
+      {loading && (
+        <p style={{ color: 'blue', marginTop: '10px', display: 'flex', alignItems: 'center' }}>
+          <FaSpinner animation="rotate" role="status"></FaSpinner>
+          Loading...
+        </p>
+      )}
 
       <div
         style={{

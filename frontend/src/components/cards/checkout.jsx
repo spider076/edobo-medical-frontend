@@ -51,7 +51,7 @@ export default function CheckoutCard({ ...props }) {
           <Card className="card-main" key={Math.random()}>
             <Stack direction="row" alignItems="center">
               <ThumbImgStyle>
-                <BlurImage priority fill alt="product image" src={image} />
+                <BlurImage priority fill alt="prod  uct image" src={image} />
               </ThumbImgStyle>
               <Box sx={{ display: 'contents' }}>
                 <Typography variant="h5" color="text.primary" noWrap textOverflow="ellipsis">

@@ -1,4 +1,6 @@
-const { DocumentProcessorServiceClient } = require("@google-cloud/documentai").v1;
+const {
+  DocumentProcessorServiceClient
+} = require("@google-cloud/documentai").v1;
 const fs = require("fs").promises;
 const mongoose = require("mongoose");
 const Product = require("../models/Product"); // Assuming the Product schema is in models/Product.js
@@ -8,18 +10,18 @@ const location = "us";
 const processorId = process.env.GOOGLE_PROCESSORID;
 
 // MongoDB Connection Setup
-const connectToDatabase = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("MongoDB connection error:", err);
-    throw err;
-  }
-};
+// const connectToDatabase = async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGODB_URI, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log("Connected to MongoDB");
+//   } catch (err) {
+//     console.error("MongoDB connection error:", err);
+//     throw err;
+//   }
+// };
 
 function getText(textAnchor, text) {
   if (!textAnchor.textSegments || textAnchor.textSegments.length === 0) {
@@ -39,7 +41,7 @@ function getText(textAnchor, text) {
 const googleVision = async ({ filePath }) => {
   try {
     // Step 1: Connect to MongoDB
-    await connectToDatabase();
+    // await connectToDatabase();
 
     const client = new DocumentProcessorServiceClient();
     const name = `projects/${projectId}/locations/${location}/processors/${processorId}`;
@@ -51,8 +53,8 @@ const googleVision = async ({ filePath }) => {
       skipHumanReview: true,
       rawDocument: {
         content: document,
-        mimeType: "application/pdf",
-      },
+        mimeType: "application/pdf"
+      }
     };
 
     const [response] = await client.processDocument(request);
@@ -90,7 +92,9 @@ const googleVision = async ({ filePath }) => {
                 getText(cell.layout.textAnchor, documentText.text)
               );
               if (bodyCells[prescribedMedicinesIndex]) {
-                prescribedMedicinesData.push(bodyCells[prescribedMedicinesIndex].trim());
+                prescribedMedicinesData.push(
+                  bodyCells[prescribedMedicinesIndex].trim()
+                );
               }
             }
           });
@@ -98,11 +102,17 @@ const googleVision = async ({ filePath }) => {
       }
     }
 
-    console.log("Prescribed Medicines Data (Odd Rows Only):", prescribedMedicinesData);
+    console.log(
+      "Prescribed Medicines Data (Odd Rows Only):",
+      prescribedMedicinesData
+    );
 
     // Step 2: Search for products in the database
     for (const medicineName of prescribedMedicinesData) {
-      const product = await Product.findOne({ name: medicineName, status: "active" }); // Only fetch active products
+      const product = await Product.findOne({
+        name: medicineName,
+        status: "active"
+      }); // Only fetch active products
       if (product) {
         console.log(`Product found: ${product.name}, adding to cart...`);
         // Here, you can add logic to insert into a cart collection or handle cart logic

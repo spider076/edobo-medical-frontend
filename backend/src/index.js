@@ -107,7 +107,7 @@ app.get("/", (req, res) => {
   res.send("This is a GET API");
 });
 
-app.post("/process-pdf", upload.single("file"), processPdf);
+app.post("/api/process-pdf", upload.single("file"), processPdf);
 
 // Start the server
 app.listen(PORT, () => {

@@ -1,7 +1,9 @@
 const googleVision = require("../config/googleVision");
+const Product = require("../models/Product");
 
 const processPdf = async (req, res) => {
   const file = req.file;
+  const authHeader = req.headers.authorization;
 
   if (!file) {
     return res.status(400).json({
@@ -10,19 +12,75 @@ const processPdf = async (req, res) => {
     });
   }
 
-  console.log("file path : ", file.path);
+  try {
+    const response = await googleVision({
+      filePath: file.path
+    });
 
-  const response = await googleVision({
-    filePath: file.path
-  });
+    if (!response.error) {
+      const productNamesFromApi = response.data;
 
-  // console.log("response : ", response.text);
+      const allProducts = await Product.find(
+        {},
+        "name sku _id price priceSale images"
+      ).lean();
 
-  //   return res.status(200).json({
-  //     success: true,
-  //     name: file.originalname,
-  //     path: file.path
-  //   });
+      console.log("pdocuts : ", allProducts);
+
+      const availableProducts = allProducts.filter((product) =>
+        productNamesFromApi.includes(product.name)
+      );
+      const unavailableProducts = productNamesFromApi.filter(
+        (name) => !allProducts.some((product) => product.name === name)
+      );
+
+      const cartItems = availableProducts.map((product) => ({
+        pid: product._id,
+        sku: product.sku,
+        quantity: 1,
+        price: product.priceSale || product.price,
+        subtotal: (product.priceSale || product.price) * 1
+      }));
+
+      if (cartItems.length > 0) {
+        const cartResponses = await Promise.all(
+          cartItems.map((item) =>
+            fetch("http://localhost:4000/api/cart/add", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: authHeader
+              },
+              body: JSON.stringify(item)
+            })
+          )
+        );
+
+        const failedResponses = cartResponses.filter(
+          (response) => !response.ok
+        );
+
+        if (failedResponses.length > 0) {
+          throw new Error("Failed to add products to the cart.");
+        }
+
+        return res.status(200).json({
+          success: true,
+          availableProducts: availableProducts.map((product) => product.name),
+          unavailableProducts
+        });
+      }
+    } else {
+      throw new Error(response.error);
+    }
+  } catch (error) {
+    console.error("Error processing PDF:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error processing PDF."
+    });
+  }
 };
 
 module.exports = processPdf;

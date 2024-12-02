@@ -35,6 +35,7 @@ export default function Dashboard({ isVendor }) {
       onError: (error) => toast.error(error.message || 'Something went wrong!')
     }
   );
+
   const data = dashboard?.data || {};
   const daily_earning = data?.dailyEarning;
   const daily_orders = data?.dailyOrders;

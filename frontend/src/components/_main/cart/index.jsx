@@ -12,6 +12,7 @@ import { getCart } from 'src/redux/slices/product';
 // components
 import PaymentSummarySkeleton from 'src/components/skeletons/cart/paymentSummary';
 import ShoppingCartSkeleton from 'src/components/skeletons/cart/shoppingcart';
+import toast from 'react-hot-toast';
 // dynamic
 const ShoppingCart = dynamic(() => import('src/components/_main/cart/shoppingCart'), {
   loading: () => <ShoppingCartSkeleton />
