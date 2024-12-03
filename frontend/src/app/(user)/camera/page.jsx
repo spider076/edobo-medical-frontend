@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import Webcam from 'react-webcam';
 import * as api from 'src/services';
 import { useDispatch } from 'src/redux';
-import { addCart } from 'src/redux/slices/product';
+import { addCart, getCart } from 'src/redux/slices/product';
 import { FaSpinner } from 'react-icons/fa';
 
 const CameraPage = () => {
@@ -22,11 +22,14 @@ const CameraPage = () => {
   const [unavailables, setUnavailables] = useState([]);
 
   const router = useRouter();
+  const dispatch = useDispatch();
   const { mutate: mutatePdf } = useMutation(api.processPdf, {
     onSuccess: async (res) => {
-      const { availableProducts, unavailableProducts } = await res;
-      toast.success(res.message);
+      const { availableProducts, unavailableProducts, updatedCart } = await res;
 
+      console.log('updatedCart : ', updatedCart.data);
+
+      dispatch(getCart(updatedCart.data));
       if (unavailableProducts.length > 0) {
         setUnavailables(unavailableProducts);
       }
@@ -142,6 +145,7 @@ const CameraPage = () => {
     }
     const formData = new FormData();
     formData.append('file', selectedFile);
+    setLoading(true);
 
     mutatePdf(formData);
   };
@@ -179,7 +183,7 @@ const CameraPage = () => {
 
       {loading && (
         <p style={{ color: 'blue', marginTop: '10px', display: 'flex', alignItems: 'center' }}>
-          <FaSpinner animation="rotate" role="status"></FaSpinner>
+          <FaSpinner animation="spin" role="status" aria-hidden="true" />
           Loading...
         </p>
       )}

@@ -44,17 +44,37 @@ const processPdf = async (req, res) => {
 
       if (cartItems.length > 0) {
         const cartResponses = await Promise.all(
-          cartItems.map((item) =>
-            fetch("http://localhost:4000/api/cart/add", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: authHeader
-              },
-              body: JSON.stringify(item)
-            })
+          cartItems.map(
+            (item) =>
+              new Promise(async (resolve, reject) => {
+                try {
+                  const response = await fetch(
+                    "http://localhost:4000/api/cart/add",
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: authHeader
+                      },
+                      body: JSON.stringify(item)
+                    }
+                  );
+
+                  if (!response.ok) {
+                    throw new Error(
+                      `Failed to add product to cart: ${response.status}`
+                    );
+                  }
+
+                  resolve({ ok: true, data: await response.json() });
+                } catch (error) {
+                  reject({ ok: false, error });
+                }
+              })
           )
         );
+
+        const cartLength = cartResponses.length;
 
         const failedResponses = cartResponses.filter(
           (response) => !response.ok
@@ -67,7 +87,8 @@ const processPdf = async (req, res) => {
         return res.status(200).json({
           success: true,
           availableProducts: availableProducts.map((product) => product.name),
-          unavailableProducts
+          unavailableProducts,
+          updatedCart: cartResponses[cartLength - 1].data
         });
       }
     } else {
