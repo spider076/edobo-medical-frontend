@@ -2,28 +2,6 @@ const { getUser } = require("../config/getUser");
 const Products = require("../models/Product");
 const Users = require("../models/User");
 
-const getCartd = async (req, res) => {
-  try {
-    const user = await getUser(req, res);
-
-    if (!user.cart || user.cart.length === 0) {
-      return res.status(200).json({
-        success: true,
-        message: "Cart is empty",
-        data: []
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Cart retrieved successfully",
-      data: user.cart
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
 const getCart = async (request, response) => {
   try {
     const user = await getUser(request, response);
